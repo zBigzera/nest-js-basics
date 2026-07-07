@@ -1,4 +1,42 @@
-@baseUrl = http://localhost:3000/
+@baseUrl = http://localhost:3000
 ### AppControllerGetHello
 # @name AppControllerGetHello
-GET {{baseUrl}}
+GET {{baseUrl}}/
+
+###
+
+# @name Recados
+
+GET {{baseUrl}}/recados/?page=1&limit=10
+
+###
+
+GET {{baseUrl}}/recados/1/
+
+###
+
+POST {{baseUrl}}/recados/
+Content-Type: application/json
+
+{
+  "texto": "Teste novo",
+  "de": "Eauaaa",
+  "para": "Vocêaaa"
+}
+
+###
+
+PUT {{baseUrl}}/recados/1/
+Content-Type: application/json
+
+{
+  "texto": "Teste editado",
+  "de": "Eu",
+  "para": "Você",
+  "lido": false,
+  "data": "2026-07-06T18:28:44.913Z"
+}
+
+###
+
+DELETE  {{baseUrl}}/recados/1/

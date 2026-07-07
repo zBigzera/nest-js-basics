@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
-
-@Module({})
+import { RecadosController } from './recados.controller';
+import { RecadosService } from './recados.service';
+@Module({
+  controllers: [RecadosController],
+  providers: [RecadosService],
+  imports: [],
+})
 export class RecadosModule {}
