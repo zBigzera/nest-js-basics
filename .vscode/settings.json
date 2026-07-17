@@ -1,3 +1,16 @@
 {
-  "workbench.browser.enableRemoteProxy": true
+  "workbench.browser.enableRemoteProxy": true,
+  "sqltools.connections": [
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "database": "nest_js_basics",
+      "username": "admin",
+      "name": "Nest Js Basics",
+      "group": "Estudos"
+    }
+  ]
 }
