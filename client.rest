@@ -33,10 +33,46 @@ Content-Type: application/json
   "texto": "Teste editado",
   "de": "Eu",
   "para": "Você",
-  "lido": false,
-  "data": "2026-07-06T18:28:44.913Z"
+  "lido": false
 }
 
 ###
 
 DELETE  {{baseUrl}}/recados/1/
+
+@baseUrl = http://localhost:3000
+
+###
+
+# @name pessoas
+
+GET {{baseUrl}}/pessoas/?page=1&limit=10
+
+###
+
+GET {{baseUrl}}/pessoas/1/
+
+###
+
+POST {{baseUrl}}/pessoas/
+Content-Type: application/json
+
+{
+  "email": "ads@teste.com",
+  "name": "Eauaaa",
+  "password": "Vocêaaa"
+}
+
+###
+
+PATCH {{baseUrl}}/pessoas/6/
+Content-Type: application/json
+
+{
+  "name": "dsadsa",
+  "password": "Vocêaaa"
+}
+
+###
+
+DELETE  {{baseUrl}}/pessoas/4/
