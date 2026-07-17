@@ -28,8 +28,9 @@ export class RecadosService {
       },
     });
 
-    if (!recado)
+    if (!recado) {
       throw new NotFoundException('Recado não encontrado', 'Não encontrado');
+    }
 
     return recado;
   }
@@ -51,11 +52,11 @@ export class RecadosService {
       ...UpdateRecadoDto,
     });
 
-    if (recadoExistente) {
+    if (!recadoExistente) {
       throw new NotFoundException('Recado não encontrado');
     }
 
-    return this.recadoRepository.save(UpdateRecadoDto);
+    return this.recadoRepository.save(recadoExistente);
   }
 
   async delete(id: number) {
