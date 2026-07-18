@@ -11,7 +11,7 @@ GET {{baseUrl}}/recados/?page=1&limit=10
 
 ###
 
-GET {{baseUrl}}/recados/1/
+GET {{baseUrl}}/recados/7/
 
 ###
 
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 ###
 
-DELETE  {{baseUrl}}/recados/1/
+DELETE  {{baseUrl}}/recados/6/
 
 @baseUrl = http://localhost:3000
 

@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -25,7 +24,7 @@ export class RecadosController {
 
   // /recados/:id
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: number) {
     return this.service.findOne(id);
   }
 
@@ -35,10 +34,7 @@ export class RecadosController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() UpdateRecadoDto: UpdateRecadoDto,
-  ) {
+  update(@Param('id') id: number, @Body() UpdateRecadoDto: UpdateRecadoDto) {
     return this.service.update(id, UpdateRecadoDto);
   }
 
