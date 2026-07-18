@@ -12,17 +12,15 @@ import {
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('recados')
 export class RecadosController {
   constructor(private readonly service: RecadosService) {}
   // /recados/
   @Get()
-  findAll(@Query() pagination: { page?: number; limit?: number }) {
-    const page = Number(pagination.page) || 1;
-    const limit = Number(pagination.limit) || 10;
-
-    return this.service.findAll(page, limit);
+  findAll(@Query() pagination: PaginationDto) {
+    return this.service.findAll(pagination);
   }
 
   // /recados/:id

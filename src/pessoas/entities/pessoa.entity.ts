@@ -1,9 +1,11 @@
 import { IsEmail } from 'class-validator';
+import { Recado } from 'src/recados/entities/recado.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,6 +26,12 @@ export class Pessoa {
 
   @Column({ length: 255 })
   password!: string;
+
+  @OneToMany(() => Recado, (recado) => recado.de)
+  recadosEnviados!: Recado[];
+
+  @OneToMany(() => Recado, (recado) => recado.para)
+  recadosRecebidos!: Recado[];
 
   @CreateDateColumn()
   createdAt?: Date;

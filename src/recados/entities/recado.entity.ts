@@ -1,8 +1,11 @@
+import { Pessoa } from 'src/pessoas/entities/pessoa.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -18,17 +21,17 @@ export class Recado {
   })
   texto!: string;
 
-  @Column({
-    type: 'varchar',
-    length: 50,
+  @ManyToOne(() => Pessoa, {
+    onDelete: 'CASCADE',
   })
-  de!: string;
+  @JoinColumn({ name: 'de' })
+  de!: Pessoa;
 
-  @Column({
-    type: 'varchar',
-    length: 50,
+  @ManyToOne(() => Pessoa, {
+    onDelete: 'CASCADE',
   })
-  para!: string;
+  @JoinColumn({ name: 'para' })
+  para!: Pessoa;
 
   @Column({
     default: false,
