@@ -7,13 +7,16 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
 
 @Controller('recados')
+@UseInterceptors(ChangeDataInterceptor)
 export class RecadosController {
   constructor(private readonly service: RecadosService) {}
   // /recados/
