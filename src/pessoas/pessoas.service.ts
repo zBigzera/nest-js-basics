@@ -6,31 +6,36 @@ import {
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { Pessoa } from './entities/pessoa.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { HashingService } from 'src/auth/hashing/hashing.service';
 
 @Injectable()
 export class PessoasService {
   constructor(
     @InjectRepository(Pessoa)
     private readonly pessoaRepository: Repository<Pessoa>,
+    private readonly hashService: HashingService,
   ) {}
 
   async create(createPessoaDto: CreatePessoaDto) {
     try {
       const personData = {
         ...createPessoaDto,
-        password: createPessoaDto.password,
+        password: await this.hashService.hash(createPessoaDto.password),
       };
 
       const newPerson = this.pessoaRepository.create(personData);
 
       return await this.pessoaRepository.save(newPerson);
-    } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.code && error.code === '23505') {
-        throw new ConflictException('Email já existente');
+    } catch (error: unknown) {
+      if (error instanceof QueryFailedError) {
+        const err = error as QueryFailedError & { code?: string };
+
+        if (err.code && err.code === '23505') {
+          throw new ConflictException('Email já existente');
+        }
       }
 
       throw error;
@@ -62,8 +67,13 @@ export class PessoasService {
   async update(id: number, updatePessoaDto: UpdatePessoaDto) {
     const personData = {
       ...updatePessoaDto,
-      password: updatePessoaDto.password,
     };
+
+    if (updatePessoaDto.password) {
+      personData.password = await this.hashService.hash(
+        updatePessoaDto.password,
+      );
+    }
 
     const pessoa = await this.pessoaRepository.preload({
       id,

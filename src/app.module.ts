@@ -5,6 +5,7 @@ import { RecadosModule } from './recados/recados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 import databaseConfig from './config/database.config';
 
@@ -34,6 +35,7 @@ import databaseConfig from './config/database.config';
     }),
     PessoasModule,
     RecadosModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
