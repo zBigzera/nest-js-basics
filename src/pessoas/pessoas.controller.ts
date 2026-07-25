@@ -13,11 +13,7 @@ import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import {
-  AuthTokenGuard,
-  type jwtPayload,
-} from 'src/auth/guards/auth-token.guard';
-import { User } from 'src/auth/params/user.param';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -36,19 +32,19 @@ export class PessoasController {
 
   @Get(':id')
   @UseGuards(AuthTokenGuard)
-  findOne(@Param('id') id: string) {
-    return this.pessoasService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.pessoasService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthTokenGuard)
-  update(@Param('id') id: string, @Body() updatePessoaDto: UpdatePessoaDto) {
-    return this.pessoasService.update(+id, updatePessoaDto);
+  update(@Param('id') id: number, @Body() updatePessoaDto: UpdatePessoaDto) {
+    return this.pessoasService.update(id, updatePessoaDto);
   }
 
   @Delete(':id')
   @UseGuards(AuthTokenGuard)
-  remove(@Param('id') id: string) {
-    return this.pessoasService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.pessoasService.remove(id);
   }
 }
