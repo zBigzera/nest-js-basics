@@ -6,6 +6,6 @@ export class BcryptService implements HashingService {
   }
 
   async compare(password: string, passwordHash: string): Promise<boolean> {
-    return await this.compare(password, passwordHash);
+    return await bcrypt.compare(password, passwordHash);
   }
 }

@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import {
+  AuthTokenGuard,
+  type jwtPayload,
+} from 'src/auth/guards/auth-token.guard';
+import { User } from 'src/auth/params/user.param';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -23,21 +29,25 @@ export class PessoasController {
   }
 
   @Get()
+  @UseGuards(AuthTokenGuard)
   findAll(@Query() pagination: PaginationDto) {
     return this.pessoasService.findAll(pagination);
   }
 
   @Get(':id')
+  @UseGuards(AuthTokenGuard)
   findOne(@Param('id') id: string) {
     return this.pessoasService.findOne(+id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthTokenGuard)
   update(@Param('id') id: string, @Body() updatePessoaDto: UpdatePessoaDto) {
     return this.pessoasService.update(+id, updatePessoaDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthTokenGuard)
   remove(@Param('id') id: string) {
     return this.pessoasService.remove(+id);
   }
