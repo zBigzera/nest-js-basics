@@ -7,16 +7,19 @@ import {
   Post,
   Put,
   Query,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
+import {
+  AuthTokenGuard,
+  type jwtPayload,
+} from 'src/auth/guards/auth-token.guard';
+import { User } from 'src/auth/params/user.param';
 
 @Controller('recados')
-@UseInterceptors(ChangeDataInterceptor)
 export class RecadosController {
   constructor(private readonly service: RecadosService) {}
   // /recados/
@@ -32,17 +35,24 @@ export class RecadosController {
   }
 
   @Post()
-  create(@Body() CreateRecadoDto: CreateRecadoDto) {
-    return this.service.create(CreateRecadoDto);
+  @UseGuards(AuthTokenGuard)
+  create(@Body() CreateRecadoDto: CreateRecadoDto, @User() user: jwtPayload) {
+    return this.service.create(CreateRecadoDto, user);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() UpdateRecadoDto: UpdateRecadoDto) {
-    return this.service.update(id, UpdateRecadoDto);
+  @UseGuards(AuthTokenGuard)
+  update(
+    @Param('id') id: number,
+    @Body() UpdateRecadoDto: UpdateRecadoDto,
+    @User() user: jwtPayload,
+  ) {
+    return this.service.update(id, UpdateRecadoDto, user);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.service.delete(id);
+  @UseGuards(AuthTokenGuard)
+  delete(@Param('id') id: number, @User() user: jwtPayload) {
+    return this.service.delete(id, user);
   }
 }

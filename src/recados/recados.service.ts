@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { jwtPayload } from 'src/auth/guards/auth-token.guard';
 
 @Injectable()
 export class RecadosService {
@@ -68,8 +69,8 @@ export class RecadosService {
     return recado;
   }
 
-  async create(createRecadoDto: CreateRecadoDto) {
-    const de = await this.pessoasService.findOne(createRecadoDto.de);
+  async create(createRecadoDto: CreateRecadoDto, user: jwtPayload) {
+    const de = await this.pessoasService.findOne(user.sub);
 
     const para = await this.pessoasService.findOne(createRecadoDto.para);
 
@@ -83,15 +84,26 @@ export class RecadosService {
     const recado = this.recadoRepository.create(novoRecado);
     await this.recadoRepository.save(recado);
 
-    return {
+    const payload = {
       ...recado,
       de: recado.de.id,
       para: recado.para.id,
     };
+
+    return payload;
   }
 
-  async update(id: number, UpdateRecadoDto: UpdateRecadoDto) {
-    const recadoExistente = await this.findOne(id);
+  async update(id: number, UpdateRecadoDto: UpdateRecadoDto, user: jwtPayload) {
+    const recadoExistente = await this.recadoRepository.findOneBy({
+      id,
+      de: {
+        id: user.sub,
+      },
+    });
+
+    if (!recadoExistente) {
+      throw new NotFoundException('Recado não encontrado');
+    }
 
     recadoExistente.texto = UpdateRecadoDto?.texto ?? recadoExistente.texto;
     recadoExistente.lido = UpdateRecadoDto?.lido ?? recadoExistente.lido;
@@ -99,8 +111,13 @@ export class RecadosService {
     return this.recadoRepository.save(recadoExistente);
   }
 
-  async delete(id: number) {
-    const recadoExistente = await this.recadoRepository.findOneBy({ id });
+  async delete(id: number, user: jwtPayload) {
+    const recadoExistente = await this.recadoRepository.findOneBy({
+      id,
+      de: {
+        id: user.sub,
+      },
+    });
 
     if (!recadoExistente) {
       throw new NotFoundException('Recado não encontrado');

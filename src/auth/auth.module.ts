@@ -13,7 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     TypeOrmModule.forFeature([Pessoa]),
     ConfigModule.forFeature(jwtConfig),
-    JwtModule.registerAsync(jwtConfig.asProvider()),
+    JwtModule.registerAsync({ ...jwtConfig.asProvider(), global: true }),
   ],
   providers: [
     {
