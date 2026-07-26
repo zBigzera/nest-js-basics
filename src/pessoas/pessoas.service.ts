@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
@@ -10,6 +11,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { Pessoa } from './entities/pessoa.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { HashingService } from 'src/auth/hashing/hashing.service';
+import { jwtPayload } from 'src/auth/guards/auth-token.guard';
 
 @Injectable()
 export class PessoasService {
@@ -64,7 +66,11 @@ export class PessoasService {
     return pessoa;
   }
 
-  async update(id: number, updatePessoaDto: UpdatePessoaDto) {
+  async update(id: number, updatePessoaDto: UpdatePessoaDto, user: jwtPayload) {
+    if (id !== user.sub) {
+      throw new UnauthorizedException('Você não pode realizar essa operação');
+    }
+
     const personData = {
       ...updatePessoaDto,
     };
@@ -85,7 +91,11 @@ export class PessoasService {
     return await this.pessoaRepository.save(pessoa);
   }
 
-  async remove(id: number) {
+  async remove(id: number, user: jwtPayload) {
+    if (id !== user.sub) {
+      throw new UnauthorizedException('Você não pode realizar essa operação');
+    }
+
     const pessoa = await this.pessoaRepository.findOne({
       where: {
         id: id,
