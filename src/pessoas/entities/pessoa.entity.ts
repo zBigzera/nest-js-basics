@@ -1,4 +1,5 @@
 import { IsEmail } from 'class-validator';
+import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
 import { Recado } from 'src/recados/entities/recado.entity';
 import {
   Column,
@@ -26,6 +27,9 @@ export class Pessoa {
 
   @Column({ length: 255 })
   password!: string;
+
+  @Column({ type: 'simple-array', default: [] })
+  policies!: RoutePolicies[];
 
   @OneToMany(() => Recado, (recado) => recado.de)
   recadosEnviados!: Recado[];

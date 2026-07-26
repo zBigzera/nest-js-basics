@@ -45,6 +45,7 @@ export class AuthService {
   private async createTokens(pessoa: Pessoa) {
     const acessToken = await this.getToken(pessoa.id, this.jwtConfigs.ttl, {
       email: pessoa.email,
+      policies: pessoa.policies,
     });
 
     const refreshToken = await this.getToken(

@@ -12,10 +12,12 @@ GET {{baseUrl}}/
 # @name Recados
 
 GET {{baseUrl}}/recados/?page=1&limit=10
+Authorization: Bearer {{authToken}}
 
 ###
 
 GET {{baseUrl}}/recados/7/
+Authorization: Bearer {{authToken}}
 
 ###
 
@@ -64,9 +66,10 @@ POST {{baseUrl}}/pessoas/
 Content-Type: application/json
 
 {
-  "email": "teste2@teste.com",
+  "email": "teste6@teste.com",
   "name": "Eauaaa",
-  "password": "senha"
+  "password": "senha",
+  "policies": ["createRecado", "updateRecado"]
 }
 
 ###
@@ -92,7 +95,7 @@ POST {{baseUrl}}/auth/
 Content-Type: application/json
 
 {
-  "email": "teste2@teste.com",
+  "email": "teste6@teste.com",
   "password": "senha"
 }
 

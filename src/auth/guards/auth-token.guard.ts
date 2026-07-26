@@ -10,6 +10,7 @@ import { Request } from 'express';
 export interface jwtPayload {
   sub: number;
   email: string;
+  policies: string[];
 }
 
 @Injectable()
