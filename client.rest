@@ -1,5 +1,8 @@
 @baseUrl = http://localhost:3000
-@authToken = {{authenticate.response.body.data}}
+@authToken = {{authenticate.response.body.data.acessToken}}
+
+@refreshToken = {{authenticate.response.body.data.refreshToken}}
+
 ### AppControllerGetHello
 # @name AppControllerGetHello
 GET {{baseUrl}}/
@@ -91,4 +94,14 @@ Content-Type: application/json
 {
   "email": "teste2@teste.com",
   "password": "senha"
+}
+
+###
+# @name refresh
+
+POST {{baseUrl}}/auth/refresh/
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
 }

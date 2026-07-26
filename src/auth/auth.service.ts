@@ -7,6 +7,8 @@ import { HashingService } from './hashing/hashing.service';
 import type { ConfigType } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
+import { refreshTokenDto } from './dto/refresh-token.dto';
+import { jwtPayload } from './guards/auth-token.guard';
 
 @Injectable()
 export class AuthService {
@@ -37,11 +39,50 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
-    const acessToken = await this.jwtService.signAsync({
-      sub: pessoa.id,
+    return this.createTokens(pessoa);
+  }
+
+  private async createTokens(pessoa: Pessoa) {
+    const acessToken = await this.getToken(pessoa.id, this.jwtConfigs.ttl, {
       email: pessoa.email,
     });
 
-    return acessToken;
+    const refreshToken = await this.getToken(
+      pessoa.id,
+      this.jwtConfigs.jwt_refresh_ttl,
+    );
+
+    return { acessToken, refreshToken };
+  }
+
+  private async getToken<T>(sub: number, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
+      {
+        sub: sub,
+        ...payload,
+      },
+      {
+        expiresIn,
+      },
+    );
+  }
+
+  async refresh(refreshTokenDto: refreshTokenDto) {
+    try {
+      const tok = await this.jwtService.verifyAsync<jwtPayload>(
+        refreshTokenDto.refreshToken,
+      );
+      console.log(tok);
+
+      const user = await this.pessoaRepository.findOneBy({ id: tok.sub });
+
+      if (!user) {
+        throw new UnauthorizedException('Usuário não encontrado');
+      }
+
+      return this.createTokens(user);
+    } catch {
+      throw new UnauthorizedException('Refresh token inválido');
+    }
   }
 }
