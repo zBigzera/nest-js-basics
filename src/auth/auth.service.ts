@@ -80,6 +80,8 @@ export class AuthService {
         throw new UnauthorizedException('Usuário não encontrado');
       }
 
+      // Poderia salvar no banco o refresh token e verificar pra tornar ele revogável
+
       return this.createTokens(user);
     } catch {
       throw new UnauthorizedException('Refresh token inválido');
