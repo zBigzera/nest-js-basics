@@ -31,6 +31,9 @@ export class Pessoa {
   @Column({ type: 'simple-array', default: [] })
   policies!: RoutePolicies[];
 
+  @Column({ default: '' })
+  picture!: string;
+
   @OneToMany(() => Recado, (recado) => recado.de)
   recadosEnviados!: Recado[];
 

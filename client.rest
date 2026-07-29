@@ -108,3 +108,19 @@ Content-Type: application/json
 {
   "refreshToken": "{{refreshToken}}"
 }
+
+### Foto do user
+
+POST {{baseUrl}}/pessoas/upload-picture
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----Separador
+
+------Separador
+Content-Disposition: form-data; name="file"; filename="imglink.png"
+Content-Type: image/png
+
+< ./images/49abeddcd117f1a5a594abb4dcd5dba4.jpg
+------Separador--
+
+### Ver foto
+GET {{baseUrl}}/pictures/28-pfp.png

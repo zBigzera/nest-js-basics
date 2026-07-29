@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -12,6 +13,8 @@ import { Pessoa } from './entities/pessoa.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { HashingService } from 'src/auth/hashing/hashing.service';
 import { jwtPayload } from 'src/auth/guards/auth-token.guard';
+import path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class PessoasService {
@@ -105,5 +108,27 @@ export class PessoasService {
     if (!pessoa) throw new NotFoundException();
 
     return this.pessoaRepository.softRemove(pessoa);
+  }
+
+  async uploadPicture(file: Express.Multer.File, user: jwtPayload) {
+    if (file.size < 1025) {
+      throw new BadRequestException('File too small');
+    }
+    const ext = path.extname(file.originalname);
+    const fileName = `${user.sub}-pfp${ext}`;
+    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+
+    const pessoa = await this.findOne(user.sub);
+    pessoa.picture = fileName;
+
+    await this.pessoaRepository.save(pessoa);
+
+    await fs.promises.mkdir(path.dirname(fileFullPath), { recursive: true });
+
+    await fs.promises.writeFile(fileFullPath, file.buffer);
+
+    // TODO: usar uma biblioteca file-type pra validar o arquivo
+
+    return pessoa;
   }
 }

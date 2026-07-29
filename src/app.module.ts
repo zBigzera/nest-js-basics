@@ -8,6 +8,8 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 import databaseConfig from './config/database.config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
 
 @Module({
   imports: [
@@ -32,6 +34,10 @@ import databaseConfig from './config/database.config';
           synchronize: true,
         };
       },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(process.cwd(), 'pictures'),
+      serveRoot: '/pictures',
     }),
     PessoasModule,
     RecadosModule,
