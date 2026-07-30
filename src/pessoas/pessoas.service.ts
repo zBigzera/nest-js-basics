@@ -35,14 +35,12 @@ export class PessoasService {
 
       return await this.pessoaRepository.save(newPerson);
     } catch (error: unknown) {
-      if (error instanceof QueryFailedError) {
-        const err = error as QueryFailedError & { code?: string };
-
-        if (err.code && err.code === '23505') {
-          throw new ConflictException('Email já existente');
-        }
+      if (
+        error instanceof QueryFailedError &&
+        (error.driverError as { code?: string }).code === '23505'
+      ) {
+        throw new ConflictException('Email já existente');
       }
-
       throw error;
     }
   }
