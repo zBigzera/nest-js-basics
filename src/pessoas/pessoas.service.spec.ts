@@ -276,7 +276,7 @@ describe('Testando service de pessoas', () => {
         ...dto,
       };
 
-      jest.spyOn(pessoaService, 'findOne').mockResolvedValue(pessoa as any);
+      jest.spyOn(pessoaService, 'findOne').mockResolvedValue(pessoa as Pessoa);
 
       jest.spyOn(repositoryMock, 'save').mockResolvedValue({
         ...pessoa,
