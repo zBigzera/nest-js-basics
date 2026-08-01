@@ -15,6 +15,7 @@ import path from 'path';
   imports: [
     ConfigModule.forRoot({
       load: [databaseConfig],
+      isGlobal: true,
       validationSchema: Joi.object({
         DB_TYPE: Joi.required(),
         DB_HOST: Joi.required(),
@@ -25,7 +26,6 @@ import path from 'path';
       }),
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(databaseConfig)],
       inject: [databaseConfig.KEY],
       useFactory: (dbConfig: ConfigType<typeof databaseConfig>) => {
         return {
