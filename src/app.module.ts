@@ -10,6 +10,8 @@ import * as Joi from 'joi';
 import databaseConfig from './config/database.config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'path';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -39,11 +41,27 @@ import path from 'path';
       rootPath: path.resolve(process.cwd(), 'pictures'),
       serveRoot: '/pictures',
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 100,
+          blockDuration: 5000,
+        },
+      ],
+      errorMessage: 'Você está realizando muitas requisições.',
+    }),
     PessoasModule,
     RecadosModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
