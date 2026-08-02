@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { jwtPayload } from 'src/auth/guards/auth-token.guard';
+import { ResponseRecadoDto } from './dto/response-recado.dto';
 
 @Injectable()
 export class RecadosService {
@@ -16,7 +17,7 @@ export class RecadosService {
     private readonly pessoasService: PessoasService,
   ) {}
 
-  async findAll(pagination: PaginationDto = {}) {
+  async findAll(pagination: PaginationDto = {}): Promise<ResponseRecadoDto[]> {
     const { limit = 10, page = 1 } = pagination;
 
     const offset = (page - 1) * limit;
@@ -41,7 +42,7 @@ export class RecadosService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<ResponseRecadoDto> {
     const recado = await this.recadoRepository.findOne({
       where: {
         id: id,
@@ -69,7 +70,10 @@ export class RecadosService {
     return recado;
   }
 
-  async create(createRecadoDto: CreateRecadoDto, user: jwtPayload) {
+  async create(
+    createRecadoDto: CreateRecadoDto,
+    user: jwtPayload,
+  ): Promise<ResponseRecadoDto> {
     const de = await this.pessoasService.findOne(user.sub);
 
     const para = await this.pessoasService.findOne(createRecadoDto.para);
@@ -86,14 +90,18 @@ export class RecadosService {
 
     const payload = {
       ...recado,
-      de: recado.de.id,
-      para: recado.para.id,
+      de: de,
+      para: para,
     };
 
     return payload;
   }
 
-  async update(id: number, UpdateRecadoDto: UpdateRecadoDto, user: jwtPayload) {
+  async update(
+    id: number,
+    UpdateRecadoDto: UpdateRecadoDto,
+    user: jwtPayload,
+  ): Promise<ResponseRecadoDto> {
     const recadoExistente = await this.recadoRepository.findOneBy({
       id,
       de: {
@@ -111,7 +119,7 @@ export class RecadosService {
     return this.recadoRepository.save(recadoExistente);
   }
 
-  async delete(id: number, user: jwtPayload) {
+  async delete(id: number, user: jwtPayload): Promise<ResponseRecadoDto> {
     const recadoExistente = await this.recadoRepository.findOneBy({
       id,
       de: {
@@ -123,6 +131,7 @@ export class RecadosService {
       throw new NotFoundException('Recado não encontrado');
     }
 
-    return this.recadoRepository.remove(recadoExistente);
+    await this.recadoRepository.remove(recadoExistente);
+    return recadoExistente;
   }
 }

@@ -21,13 +21,33 @@ import { User } from 'src/auth/params/user.param';
 import { RoutePolicy } from 'src/auth/decorator/RoutePolicy.decorator';
 import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
 import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller('recados')
 @UseGuards(AuthTokenGuard, RoutePolicyGuard)
+@ApiBearerAuth()
 export class RecadosController {
   constructor(private readonly service: RecadosService) {}
   // /recados/
   @Get()
+  @ApiOperation({
+    summary: 'Obter todos recados com paginação',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    example: 1,
+    description: 'Numero da página',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Recados retornados com sucesso',
+  })
   @RoutePolicy(RoutePolicies.findAllRecados)
   findAll(@Query() pagination: PaginationDto) {
     return this.service.findAll(pagination);

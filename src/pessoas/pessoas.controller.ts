@@ -24,6 +24,7 @@ import {
 } from 'src/auth/guards/auth-token.guard';
 import { User } from 'src/auth/params/user.param';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -36,12 +37,14 @@ export class PessoasController {
 
   @Get()
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   findAll(@Query() pagination: PaginationDto) {
     return this.pessoasService.findAll(pagination);
   }
 
   @Post('upload-picture')
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('file'))
   async uploadPicture(
     @User() user: jwtPayload,
@@ -64,12 +67,14 @@ export class PessoasController {
 
   @Get(':id')
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   findOne(@Param('id') id: number) {
     return this.pessoasService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   update(
     @Param('id') id: number,
     @Body() updatePessoaDto: UpdatePessoaDto,
@@ -80,6 +85,7 @@ export class PessoasController {
 
   @Delete(':id')
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   remove(@Param('id') id: number, @User() user: jwtPayload) {
     return this.pessoasService.remove(id, user);
   }
